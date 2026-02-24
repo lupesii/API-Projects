@@ -6,10 +6,10 @@ import {
 	validatorCompiler,
 	type ZodTypeProvider,
 } from "fastify-type-provider-zod";
-import z4 from "zod/v4";
 import { getEducation } from "./routes/get-education.ts";
 import { getExperience } from "./routes/get-experience.ts";
 import { getProjectsRoute } from "./routes/get-projects.ts";
+import { postImageRoute } from "./routes/post-image.ts";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>(); //Extende o fastify para utilizar como provedor de tipos o zod
 app.setSerializerCompiler(serializerCompiler);
@@ -27,6 +27,7 @@ app.get("/", async (req, res) => {
 app.register(getProjectsRoute);
 app.register(getEducation);
 app.register(getExperience);
+app.register(postImageRoute);
 
 const start = async () => {
 	try {
