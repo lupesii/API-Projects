@@ -9,6 +9,7 @@ import {
 import { getEducation } from "./routes/get-education.ts";
 import { getExperience } from "./routes/get-experience.ts";
 import { getProjectsRoute } from "./routes/get-projects.ts";
+import { postHistory } from "./routes/post-history.ts";
 import { postImageRoute } from "./routes/post-image.ts";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>(); //Extende o fastify para utilizar como provedor de tipos o zod
@@ -28,6 +29,7 @@ app.register(getProjectsRoute);
 app.register(getEducation);
 app.register(getExperience);
 app.register(postImageRoute);
+app.register(postHistory);
 
 const start = async () => {
 	try {
