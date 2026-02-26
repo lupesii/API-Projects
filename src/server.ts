@@ -11,6 +11,7 @@ import { getExperience } from "./routes/get-experience.ts";
 import { getProjectsRoute } from "./routes/get-projects.ts";
 import { postHistory } from "./routes/post-history.ts";
 import { postImageRoute } from "./routes/post-image.ts";
+import { postProject } from "./routes/post-project.ts";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>(); //Extende o fastify para utilizar como provedor de tipos o zod
 app.setSerializerCompiler(serializerCompiler);
@@ -30,6 +31,7 @@ app.register(getEducation);
 app.register(getExperience);
 app.register(postImageRoute);
 app.register(postHistory);
+app.register(postProject);
 
 const start = async () => {
 	try {
