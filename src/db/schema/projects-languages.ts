@@ -6,10 +6,10 @@ export const projectsLanguagesTable = pgTable(
 	"projects_languages",
 	{
 		projectId: uuid()
-			.references(() => projectsTable.id)
+			.references(() => projectsTable.id, { onDelete: "cascade" })
 			.notNull(),
 		languagesId: uuid()
-			.references(() => languagesTable.id)
+			.references(() => languagesTable.id, { onDelete: "cascade" })
 			.notNull(),
 	},
 	(table) => ({

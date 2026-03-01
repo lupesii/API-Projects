@@ -1,40 +1,42 @@
-import type { MultipartFile } from "@fastify/multipart";
 import type { FastifyPluginCallback } from "fastify";
-import { Writable } from "stream";
-import { pipeline } from "stream/promises";
+import { db } from "src/db/connection";
+import { projectsTable } from "src/db/schema/projects";
+import z from "zod";
+
+const projectSchema = z.object({
+	Titulo: z.string(),
+	Descricao: z.string(),
+	webSiteURL: z.url(),
+	githubURL: z.url(),
+	status: z.boolean(),
+});
+
+type project = z.infer<typeof projectSchema>;
 
 export const postProject: FastifyPluginCallback = (app) => {
-	app.post("/criaProjeto", async (req, res) => {
-		const parts = req.parts();
+	app.post(
+		"/criaProjeto",
+		{
+			schema: {
+				body: projectSchema,
+			},
+		},
+		async (req, res) => {
+			const projectData: project = projectSchema.parse(req.body);
 
-		let _file: MultipartFile;
-		let projectData: JSON | null = null;
+			if (!projectData) res.code(400).send({ Error: "Dados não encontrados" });
 
-		for await (const part of parts) {
-			if (part.type === "file") {
-				_file = part;
-				await pipeline(
-					part.file,
-					new Writable({
-						write(chuck, encoding, callback) {
-							callback();
-						},
-					}),
-				);
-			}
-			if (
-				part.fieldname === "project" &&
-				"value" in part &&
-				typeof part.value === "string"
-			) {
-				projectData = await JSON.parse(part.value.toString());
-			}
-		}
-
-		if (projectData) {
-			res.code(200).send(projectData);
-		} else {
-			res.code(400).send({ error: "Project data is missing" });
-		}
-	});
+			const [InsertProjectData] = await db
+				.insert(projectsTable)
+				.values({
+					title: projectData.Titulo,
+					description: projectData.Descricao,
+					webSiteURL: projectData.webSiteURL,
+					githubURL: projectData.githubURL,
+					status: projectData.status,
+				})
+				.returning();
+			res.code(200).send(InsertProjectData);
+		},
+	);
 };

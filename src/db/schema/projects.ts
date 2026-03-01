@@ -7,4 +7,5 @@ export const projectsTable = pgTable("projects", {
 	webSiteURL: varchar(),
 	githubURL: varchar().notNull(),
 	status: boolean().notNull(),
+	imageURL: varchar(),
 });
