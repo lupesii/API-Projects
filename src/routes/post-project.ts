@@ -1,6 +1,7 @@
 import type { FastifyPluginCallback } from "fastify";
 import { db } from "src/db/connection";
 import { projectsTable } from "src/db/schema/projects";
+import { projectsLanguagesTable } from "src/db/schema/projects-languages";
 import z from "zod";
 
 const projectSchema = z.object({
@@ -9,6 +10,7 @@ const projectSchema = z.object({
 	webSiteURL: z.url(),
 	githubURL: z.url(),
 	status: z.boolean(),
+	languages: z.array(z.string()),
 });
 
 type project = z.infer<typeof projectSchema>;
@@ -36,7 +38,13 @@ export const postProject: FastifyPluginCallback = (app) => {
 					status: projectData.status,
 				})
 				.returning();
-			res.code(200).send(InsertProjectData);
+
+			await db.insert(projectsLanguagesTable).values(
+				projectData.languages.map((language) => {
+					return { projectId: InsertProjectData.id, languagesId: language };
+				}),
+			);
+			res.code(200).send({ id: InsertProjectData.id });
 		},
 	);
 };

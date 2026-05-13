@@ -6,13 +6,14 @@ import {
 	validatorCompiler,
 	type ZodTypeProvider,
 } from "fastify-type-provider-zod";
+import { deleteProject } from "./routes/delete-projects.ts";
 import { getEducation } from "./routes/get-education.ts";
 import { getExperience } from "./routes/get-experience.ts";
 import { getProjectsRoute } from "./routes/get-projects.ts";
+import { postEmail } from "./routes/post-email.ts";
 import { postHistory } from "./routes/post-history.ts";
 import { postImageRoute } from "./routes/post-image.ts";
 import { postProject } from "./routes/post-project.ts";
-import { deleteProject } from "./routes/delete-projects.ts";
 import { putProject } from "./routes/put-projects.ts";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>(); //Extende o fastify para utilizar como provedor de tipos o zod
@@ -35,7 +36,8 @@ app.register(postImageRoute);
 app.register(postHistory);
 app.register(postProject);
 app.register(deleteProject);
-app.register(putProject)
+app.register(putProject);
+app.register(postEmail);
 
 const start = async () => {
 	try {
